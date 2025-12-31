@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "InteractiveTextbook": {
+      "commandName": "Project",
+      "executablePath": "",
+      "workingDirectory": "",
+      "launchBrowser": false,
+      "launchUrl": "",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

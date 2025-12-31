@@ -1,0 +1,124 @@
+<Window x:Class="InteractiveTextbook.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sc="clr-namespace:InteractiveTextbook.Converters"
+        Title="Interactive Textbook Viewer" 
+        Height="800" 
+        Width="1400"
+        Background="#F5F5F5"
+        WindowStartupLocation="CenterScreen">
+    
+    <DockPanel>
+        <!-- Thanh công cụ -->
+        <Border DockPanel.Dock="Top" 
+                Background="White" 
+                Padding="10"
+                Height="60">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="📂 Mở PDF" 
+                    Command="{Binding LoadPdfCommand}"
+                    Padding="10,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <Rectangle Width="1" Height="30" Fill="#DDD" Margin="5,0"/>
+            
+            <Button Content="◀ Trang trước" 
+                    Command="{Binding PreviousPageCommand}"
+                    Padding="10,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <Button Content="Trang sau ▶" 
+                    Command="{Binding NextPageCommand}"
+                    Padding="10,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <Rectangle Width="1" Height="30" Fill="#DDD" Margin="5,0"/>
+            
+            <Button Content="🔍+" 
+                    Command="{Binding ZoomInCommand}"
+                    Padding="8,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <Button Content="🔍-" 
+                    Command="{Binding ZoomOutCommand}"
+                    Padding="8,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <Button Content="Bình thường" 
+                    Command="{Binding ResetZoomCommand}"
+                    Padding="10,5"
+                    Margin="5"
+                    FontSize="14"/>
+            
+            <TextBlock Text="{Binding ZoomLevel, StringFormat='0%'}" 
+                       VerticalAlignment="Center" 
+                       Margin="10,0"/>
+            
+            <TextBlock Text="{Binding StatusMessage}" 
+                       VerticalAlignment="Center" 
+                       Margin="20,0"
+                       Foreground="Gray"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Thanh trang -->
+        <Border DockPanel.Dock="Bottom" 
+                Background="White" 
+                Padding="10"
+                Height="40">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Trang:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding CurrentPage}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold"/>
+                <TextBlock Text="/" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding CurrentDocument.PageCount}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Khu vực hiển thị PDF -->
+        <Border BorderBrush="#DDD" BorderThickness="1" Background="#F0F0F0" Margin="10" Name="PdfBorder">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+                    
+                    <!-- TRANG TRÁI -->
+                    <Border BorderBrush="#999" BorderThickness="1" Background="White" Margin="10" CornerRadius="2" 
+                            Width="500" Height="700">
+                        <Grid Name="LeftPageGrid">
+                            <Image Source="{Binding LeftPageImage}" 
+                                   Stretch="Fill"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="Trang trống"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="#CCC"
+                                       FontSize="16"
+                                       Visibility="{Binding LeftPageImage, Converter={x:Static sc:NullToVisibilityConverter.Instance}}"/>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- TRANG PHẢI -->
+                    <Border BorderBrush="#999" BorderThickness="1" Background="White" Margin="10" CornerRadius="2"
+                            Width="500" Height="700">
+                        <Grid Name="RightPageGrid">
+                            <Image Source="{Binding RightPageImage}" 
+                                   Stretch="Fill"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="Trang trống"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="#CCC"
+                                       FontSize="16"
+                                       Visibility="{Binding RightPageImage, Converter={x:Static sc:NullToVisibilityConverter.Instance}}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </DockPanel>
+</Window>

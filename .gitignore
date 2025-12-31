@@ -1,0 +1,42 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test results
+TestResults/
+.coverage
+
+# Artifacts
+artifacts/
+publish/
+dist/
+
+# Local environment
+.env
+.env.local
+
+# Logs
+*.log

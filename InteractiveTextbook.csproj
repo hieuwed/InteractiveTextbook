@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>InteractiveTextbook</AssemblyName>
+    <RootNamespace>InteractiveTextbook</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- PDF Rendering -->
+    <PackageReference Include="PDFiumCore" Version="97.0.4690" />
+    
+    <!-- System.Drawing for Graphics -->
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+    
+    <!-- MVVM Toolkit -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    
+    <!-- Reactive Extensions -->
+    <PackageReference Include="System.Reactive" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>
