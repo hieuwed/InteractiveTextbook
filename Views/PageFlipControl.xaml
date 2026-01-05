@@ -1,0 +1,84 @@
+<UserControl x:Class="InteractiveTextbook.Views.PageFlipControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Name="FlipControl">
+    
+    <Canvas Name="FlipCanvas" Background="Transparent">
+        <!-- Trang phía sau (back page) -->
+        <Border Name="BackPageBorder" 
+                Canvas.Left="0" 
+                Canvas.Top="0"
+                Width="500" 
+                Height="700"
+                Background="White"
+                BorderBrush="#999"
+                BorderThickness="1">
+            <Grid Name="BackPageGrid">
+                <Rectangle Fill="#E8E8E8"/>
+                <TextBlock Text="Trang sau"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="#999"
+                           FontSize="14"/>
+            </Grid>
+        </Border>
+
+        <!-- Trang lật (flip page) -->
+        <Border Name="FlipPageBorder" 
+                Canvas.Left="0" 
+                Canvas.Top="0"
+                Width="500" 
+                Height="700"
+                Background="White"
+                BorderBrush="#999"
+                BorderThickness="1">
+            
+            <Grid Name="FlipPageGrid">
+                <!-- Hình ảnh trang -->
+                <Image Name="FlipPageImage" 
+                       Stretch="Fill"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+                
+                <!-- Gradient overlay cho hiệu ứng ánh sáng -->
+                <Rectangle Name="LightGradient" 
+                           Opacity="0.3"/>
+                
+                <!-- Shadow/depth effect -->
+                <Rectangle Name="DepthOverlay" 
+                           Fill="Black" 
+                           Opacity="0"/>
+            </Grid>
+        </Border>
+
+        <!-- Mặt sau của trang lật (chỉ hiển thị khi lật > 50%) -->
+        <Border Name="FlipPageBackSideBorder" 
+                Canvas.Left="0" 
+                Canvas.Top="0"
+                Width="500" 
+                Height="700"
+                Background="#D0D0D0"
+                BorderBrush="#999"
+                BorderThickness="1"
+                Opacity="0">
+            <Grid>
+                <Rectangle Fill="#E0E0E0"/>
+                <TextBlock Text="Mặt sau trang"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="#999"
+                           FontSize="12"/>
+            </Grid>
+        </Border>
+
+        <!-- Shadow effect -->
+        <Border Name="ShadowBorder" 
+                Canvas.Left="0" 
+                Canvas.Top="0"
+                Width="500" 
+                Height="700"
+                Background="Black"
+                Opacity="0"/>
+    </Canvas>
+
+</UserControl>

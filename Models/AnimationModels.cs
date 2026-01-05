@@ -39,6 +39,23 @@ public class PageFlipState
     /// Xoay quanh cạnh phải hay cạnh trái
     /// </summary>
     public bool FlipFromRight { get; set; }
+
+    /// <summary>
+    /// Clone state for thread-safe access
+    /// </summary>
+    public PageFlipState Clone()
+    {
+        return new PageFlipState
+        {
+            Progress = this.Progress,
+            CurrentPage = this.CurrentPage,
+            NextPage = this.NextPage,
+            MouseDeltaX = this.MouseDeltaX,
+            IsFlippingForward = this.IsFlippingForward,
+            FlipVelocity = this.FlipVelocity,
+            FlipFromRight = this.FlipFromRight
+        };
+    }
 }
 
 /// <summary>

@@ -1,6 +1,10 @@
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using InteractiveTextbook.ViewModels;
+using InteractiveTextbook.Models;
+using InteractiveTextbook.Views;
 
 namespace InteractiveTextbook.Views;
 
@@ -14,82 +18,116 @@ public partial class MainWindow : Window
         var vm = new PdfViewerViewModel();
         DataContext = vm;
 
-        // Hook vào navigation commands để trigger animation
-        Loaded += (s, e) =>
-        {
-            // Monitor IsAnimating property changes để trigger animation
-            vm.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == nameof(PdfViewerViewModel.IsAnimating) && vm.IsAnimating)
-                {
-                    // Trigger page flip animation
-                    AnimatePageFlip();
-                }
-            };
-        };
+        Loaded += MainWindow_Loaded;
     }
 
-    private void AnimatePageFlip()
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        if (LeftPageGrid == null || RightPageGrid == null) return;
-
-        // Tạo storyboard animation với fade effect
-        var storyboard = new Storyboard();
-
-        // Fade out effect
-        var fadeOut = new DoubleAnimation
-        {
-            From = 1.0,
-            To = 0.3,
-            Duration = TimeSpan.FromMilliseconds(150),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-        };
-
-        // Fade in effect
-        var fadeIn = new DoubleAnimation
-        {
-            From = 0.3,
-            To = 1.0,
-            Duration = TimeSpan.FromMilliseconds(150),
-            BeginTime = TimeSpan.FromMilliseconds(150),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-        };
-
-        // Áp dụng fade animation
-        Storyboard.SetTarget(fadeOut, LeftPageGrid);
-        Storyboard.SetTargetProperty(fadeOut, new PropertyPath(UIElement.OpacityProperty));
-        storyboard.Children.Add(fadeOut);
-
-        Storyboard.SetTarget(fadeIn, LeftPageGrid);
-        Storyboard.SetTargetProperty(fadeIn, new PropertyPath(UIElement.OpacityProperty));
-        storyboard.Children.Add(fadeIn);
-
-        // Cũng áp dụng cho right page
-        var fadeOutRight = new DoubleAnimation
-        {
-            From = 1.0,
-            To = 0.3,
-            Duration = TimeSpan.FromMilliseconds(150),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-        };
-
-        var fadeInRight = new DoubleAnimation
-        {
-            From = 0.3,
-            To = 1.0,
-            Duration = TimeSpan.FromMilliseconds(150),
-            BeginTime = TimeSpan.FromMilliseconds(150),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-        };
-
-        Storyboard.SetTarget(fadeOutRight, RightPageGrid);
-        Storyboard.SetTargetProperty(fadeOutRight, new PropertyPath(UIElement.OpacityProperty));
-        storyboard.Children.Add(fadeOutRight);
-
-        Storyboard.SetTarget(fadeInRight, RightPageGrid);
-        Storyboard.SetTargetProperty(fadeInRight, new PropertyPath(UIElement.OpacityProperty));
-        storyboard.Children.Add(fadeInRight);
-
-        storyboard.Begin();
+        // Event handlers are already hooked in XAML
     }
+
+    private void NextPageButton_Click(object sender, RoutedEventArgs e)
+    {
+        var vm = ViewModel;
+        if (FlipControl != null && vm != null && !FlipControl._animationEngine.IsAnimating && 
+            vm.CurrentDocument != null && vm.CurrentPage + 2 <= vm.CurrentDocument.PageCount)
+        {
+            FlipControl.Visibility = Visibility.Visible;
+            FlipControl.AnimatePageFlip(true);  // true = flip forward
+        }
+    }
+
+    private void PreviousPageButton_Click(object sender, RoutedEventArgs e)
+    {
+        var vm = ViewModel;
+        if (FlipControl != null && vm != null && !FlipControl._animationEngine.IsAnimating && vm.CurrentPage - 2 >= 1)
+        {
+            FlipControl.Visibility = Visibility.Visible;
+            FlipControl.AnimatePageFlip(false); // false = flip backward
+        }
+    }
+
+    private void PageFlipControl_FlipCompleted(object? sender, PageFlipEventArgs e)
+    {
+        var vm = ViewModel;
+        if (vm == null || vm.CurrentDocument == null) return;
+
+        var control = sender as PageFlipControl;
+        if (control != null)
+        {
+            // Get the direction from the current animation state
+            PageFlipState state = control._animationEngine.CurrentState;
+            bool isFlipForward = state.IsFlippingForward;
+            
+            // Update page based on flip direction
+            if (isFlipForward)
+            {
+                if (vm.CurrentPage + 2 <= vm.CurrentDocument.PageCount)
+                {
+                    vm.CurrentPage = vm.CurrentPage + 2;
+                }
+            }
+            else
+            {
+                if (vm.CurrentPage - 2 >= 1)
+                {
+                    vm.CurrentPage = vm.CurrentPage - 2;
+                }
+            }
+            
+            // Load pages asynchronously
+            vm.LoadPageAsync(vm.CurrentPage).ContinueWith(_ =>
+            {
+                // Reset flip control for next flip
+                Application.Current?.Dispatcher.Invoke(() =>
+                {
+                    control.FlipProgress = 0;
+                    control.Visibility = Visibility.Hidden;
+                    vm.IsAnimating = false;
+                });
+            });
+        }
+        else
+        {
+            vm.IsAnimating = false;
+        }
+    }
+
+    private void PageFlipControl_FlipCancelled(object? sender, EventArgs e)
+    {
+        var vm = ViewModel;
+        if (vm != null)
+        {
+            vm.IsAnimating = false;
+            if (FlipControl != null)
+            {
+                FlipControl.FlipProgress = 0;
+                FlipControl.Visibility = Visibility.Hidden;
+            }
+        }
+    }
+}
+
+/// <summary>
+/// Relay command implementation
+/// </summary>
+public class RelayCommand : ICommand
+{
+    private readonly Action _execute;
+    private readonly Func<bool>? _canExecute;
+
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
+
+    public RelayCommand(Action execute, Func<bool>? canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute;
+    }
+
+    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+    public void Execute(object? parameter) => _execute();
 }

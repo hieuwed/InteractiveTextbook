@@ -139,8 +139,12 @@ public partial class PdfViewerViewModel : ObservableObject
         if (CurrentPage + 2 > CurrentDocument.PageCount) return;
 
         IsAnimating = true;
-        // Animate flip, sau đó update page
-        await Task.Delay(400); // Simulate animation
+        // Animation sẽ được handle bởi PageFlipControl
+        // Chỉ cần delay để simulate animation
+        await Task.Delay(400);
+        
+        if (!IsAnimating) return; // Check if still animating (not cancelled)
+        
         CurrentPage = CurrentPage + 2;
         await LoadPageAsync(CurrentPage);
         IsAnimating = false;
@@ -160,8 +164,11 @@ public partial class PdfViewerViewModel : ObservableObject
         if (CurrentPage - 2 < 1) return;
 
         IsAnimating = true;
-        // Animate flip, sau đó update page
-        await Task.Delay(400); // Simulate animation
+        // Animation sẽ được handle bởi PageFlipControl
+        await Task.Delay(400);
+        
+        if (!IsAnimating) return; // Check if still animating (not cancelled)
+        
         CurrentPage = CurrentPage - 2;
         await LoadPageAsync(CurrentPage);
         IsAnimating = false;
@@ -185,7 +192,7 @@ public partial class PdfViewerViewModel : ObservableObject
         ZoomLevel = 1.0;
     }
 
-    private async Task LoadPageAsync(int pageNumber)
+    public async Task LoadPageAsync(int pageNumber)
     {
         try
         {
