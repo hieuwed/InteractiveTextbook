@@ -86,12 +86,14 @@
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="500"/>
-                            <ColumnDefinition Width="500"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
                         <!-- TRANG TRÁI -->
-                        <Border Grid.Column="0" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,-2,10" CornerRadius="2">
+                        <Border Grid.Column="0" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,-2,10" CornerRadius="2"
+                                Width="{Binding ZoomLevel, Converter={x:Static sc:ZoomToWidthConverter.Instance}}"
+                                Height="{Binding ZoomLevel, Converter={x:Static sc:ZoomToHeightConverter.Instance}}">
                             <Grid Name="LeftPageGrid">
                                 <Image Source="{Binding LeftPageImage}" 
                                        Stretch="Fill"
@@ -119,7 +121,9 @@
                                               Panel.ZIndex="100"/>
                         
                         <!-- TRANG PHẢI -->
-                        <Border Grid.Column="1" BorderBrush="#999" BorderThickness="1" Background="White" Margin="-2,10,10,10" CornerRadius="2">
+                        <Border Grid.Column="1" BorderBrush="#999" BorderThickness="1" Background="White" Margin="-2,10,10,10" CornerRadius="2"
+                                Width="{Binding ZoomLevel, Converter={x:Static sc:ZoomToWidthConverter.Instance}}"
+                                Height="{Binding ZoomLevel, Converter={x:Static sc:ZoomToHeightConverter.Instance}}">
                             <Grid Name="RightPageGrid">
                                 <Image Source="{Binding RightPageImage}" 
                                        Stretch="Fill"

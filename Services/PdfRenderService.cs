@@ -11,8 +11,8 @@ namespace InteractiveTextbook.Services;
 public class PdfRenderService
 {
     private PdfDocument? _currentDocument;
-    private Dictionary<int, BitmapSource> _pageCache = new();
-    private Dictionary<int, System.Runtime.InteropServices.GCHandle> _pageHandles = new();
+    private Dictionary<string, BitmapSource> _pageCache = new();
+    private Dictionary<string, System.Runtime.InteropServices.GCHandle> _pageHandles = new();
     private FpdfDocumentT _pdfiumDocument = default!;
 
     public PdfRenderService()
@@ -123,8 +123,8 @@ public class PdfRenderService
                 return null;
             }
 
-            // Check cache first
-            var cacheKey = pageNumber;
+            // Check cache first - INCLUDE SCALE IN CACHE KEY
+            var cacheKey = $"{pageNumber}@{scale:F2}";
             if (_pageCache.TryGetValue(cacheKey, out var cachedBitmap))
             {
                 return cachedBitmap;
