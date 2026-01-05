@@ -84,11 +84,14 @@
         <Border BorderBrush="#DDD" BorderThickness="1" Background="#F0F0F0" Margin="10" x:Name="PdfViewerBorder">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" x:Name="ScrollViewerContent">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="500"/>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
                         
                         <!-- TRANG TRÁI -->
-                        <Border BorderBrush="#999" BorderThickness="1" Background="White" Margin="10" CornerRadius="2" 
-                                Width="500" Height="700">
+                        <Border Grid.Column="0" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,-2,10" CornerRadius="2">
                             <Grid Name="LeftPageGrid">
                                 <Image Source="{Binding LeftPageImage}" 
                                        Stretch="Fill"
@@ -103,8 +106,8 @@
                             </Grid>
                         </Border>
                         
-                        <!-- PAGE FLIP CONTROL OVERLAY (Giữa 2 trang) -->
-                        <local:PageFlipControl x:Name="FlipControl"
+                        <!-- PAGE FLIP CONTROL OVERLAY FOR LEFT PAGE (Trang lật về bên trái) -->
+                        <local:PageFlipControl Grid.Column="0" x:Name="FlipControlLeft"
                                               CurrentPageImage="{Binding LeftPageImage}"
                                               NextPageImage="{Binding RightPageImage}"
                                               CurrentPage="{Binding CurrentPage}"
@@ -112,14 +115,11 @@
                                               FlipCompleted="PageFlipControl_FlipCompleted"
                                               FlipCancelled="PageFlipControl_FlipCancelled"
                                               Visibility="Hidden"
-                                              Margin="-520,0,0,0"
-                                              Width="500"
-                                              Height="700"
+                                              Margin="10,10,-2,10"
                                               Panel.ZIndex="100"/>
                         
                         <!-- TRANG PHẢI -->
-                        <Border BorderBrush="#999" BorderThickness="1" Background="White" Margin="10" CornerRadius="2"
-                                Width="500" Height="700">
+                        <Border Grid.Column="1" BorderBrush="#999" BorderThickness="1" Background="White" Margin="-2,10,10,10" CornerRadius="2">
                             <Grid Name="RightPageGrid">
                                 <Image Source="{Binding RightPageImage}" 
                                        Stretch="Fill"
@@ -133,7 +133,19 @@
                                            Visibility="{Binding RightPageImage, Converter={x:Static sc:NullToVisibilityConverter.Instance}}"/>
                             </Grid>
                         </Border>
-                    </StackPanel>
+                        
+                        <!-- PAGE FLIP CONTROL OVERLAY FOR RIGHT PAGE (Trang lật về bên phải) -->
+                        <local:PageFlipControl Grid.Column="1" x:Name="FlipControlRight"
+                                              CurrentPageImage="{Binding RightPageImage}"
+                                              NextPageImage="{Binding LeftPageImage}"
+                                              CurrentPage="{Binding CurrentPage}"
+                                              TotalPages="{Binding CurrentDocument.PageCount, FallbackValue=0}"
+                                              FlipCompleted="PageFlipControl_FlipCompleted"
+                                              FlipCancelled="PageFlipControl_FlipCancelled"
+                                              Visibility="Hidden"
+                                              Margin="-2,10,10,10"
+                                              Panel.ZIndex="100"/>
+                    </Grid>
                 </Grid>
             </ScrollViewer>
         </Border>

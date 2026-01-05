@@ -29,21 +29,21 @@ public partial class MainWindow : Window
     private void NextPageButton_Click(object sender, RoutedEventArgs e)
     {
         var vm = ViewModel;
-        if (FlipControl != null && vm != null && !FlipControl._animationEngine.IsAnimating && 
+        if (FlipControlRight != null && vm != null && !FlipControlRight._animationEngine.IsAnimating && 
             vm.CurrentDocument != null && vm.CurrentPage + 2 <= vm.CurrentDocument.PageCount)
         {
-            FlipControl.Visibility = Visibility.Visible;
-            FlipControl.AnimatePageFlip(true);  // true = flip forward
+            FlipControlRight.Visibility = Visibility.Visible;
+            FlipControlRight.AnimatePageFlip(true);  // true = flip forward
         }
     }
 
     private void PreviousPageButton_Click(object sender, RoutedEventArgs e)
     {
         var vm = ViewModel;
-        if (FlipControl != null && vm != null && !FlipControl._animationEngine.IsAnimating && vm.CurrentPage - 2 >= 1)
+        if (FlipControlLeft != null && vm != null && !FlipControlLeft._animationEngine.IsAnimating && vm.CurrentPage - 2 >= 1)
         {
-            FlipControl.Visibility = Visibility.Visible;
-            FlipControl.AnimatePageFlip(false); // false = flip backward
+            FlipControlLeft.Visibility = Visibility.Visible;
+            FlipControlLeft.AnimatePageFlip(false); // false = flip backward
         }
     }
 
@@ -99,10 +99,15 @@ public partial class MainWindow : Window
         if (vm != null)
         {
             vm.IsAnimating = false;
-            if (FlipControl != null)
+            if (FlipControlLeft != null)
             {
-                FlipControl.FlipProgress = 0;
-                FlipControl.Visibility = Visibility.Hidden;
+                FlipControlLeft.FlipProgress = 0;
+                FlipControlLeft.Visibility = Visibility.Hidden;
+            }
+            if (FlipControlRight != null)
+            {
+                FlipControlRight.FlipProgress = 0;
+                FlipControlRight.Visibility = Visibility.Hidden;
             }
         }
     }
