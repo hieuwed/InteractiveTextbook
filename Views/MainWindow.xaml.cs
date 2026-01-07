@@ -1,9 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using InteractiveTextbook.ViewModels;
 using InteractiveTextbook.Models;
+using InteractiveTextbook.ViewModels;
 using InteractiveTextbook.Views;
 
 namespace InteractiveTextbook.Views;
@@ -17,13 +15,6 @@ public partial class MainWindow : Window
         InitializeComponent();
         var vm = new PdfViewerViewModel();
         DataContext = vm;
-
-        Loaded += MainWindow_Loaded;
-    }
-
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-        // Event handlers are already hooked in XAML
     }
 
     private void NextPageButton_Click(object sender, RoutedEventArgs e)
@@ -32,6 +23,15 @@ public partial class MainWindow : Window
         if (FlipControlRight != null && vm != null && !FlipControlRight._animationEngine.IsAnimating && 
             vm.CurrentDocument != null && vm.CurrentPage + 2 <= vm.CurrentDocument.PageCount)
         {
+            // Reset both controls to clean state
+            if (FlipControlLeft != null)
+            {
+                FlipControlLeft.FlipProgress = 0;
+                FlipControlLeft.Visibility = Visibility.Hidden;
+            }
+            FlipControlRight.FlipProgress = 0;
+            
+            // Show right control and animate forward
             FlipControlRight.Visibility = Visibility.Visible;
             FlipControlRight.AnimatePageFlip(true);  // true = flip forward
         }
@@ -42,6 +42,15 @@ public partial class MainWindow : Window
         var vm = ViewModel;
         if (FlipControlLeft != null && vm != null && !FlipControlLeft._animationEngine.IsAnimating && vm.CurrentPage - 2 >= 1)
         {
+            // Reset both controls to clean state
+            FlipControlLeft.FlipProgress = 0;
+            if (FlipControlRight != null)
+            {
+                FlipControlRight.FlipProgress = 0;
+                FlipControlRight.Visibility = Visibility.Hidden;
+            }
+            
+            // Show left control and animate backward
             FlipControlLeft.Visibility = Visibility.Visible;
             FlipControlLeft.AnimatePageFlip(false); // false = flip backward
         }

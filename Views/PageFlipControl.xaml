@@ -3,13 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Name="FlipControl">
     
-    <Canvas Name="FlipCanvas" Background="Transparent">
+    <Grid Name="FlipGrid" Background="Transparent">
         <!-- Trang phía sau (back page) -->
         <Border Name="BackPageBorder" 
-                Canvas.Left="0" 
-                Canvas.Top="0"
-                Width="500" 
-                Height="700"
                 Background="White"
                 BorderBrush="#999"
                 BorderThickness="1">
@@ -24,15 +20,10 @@
         </Border>
 
         <!-- Trang lật (flip page) -->
-        <Border Name="FlipPageBorder" 
-                Canvas.Left="0" 
-                Canvas.Top="0"
-                Width="500" 
-                Height="700"
+        <Border Name="FlipPageBorder"
                 Background="White"
                 BorderBrush="#999"
                 BorderThickness="1">
-            
             <Grid Name="FlipPageGrid">
                 <!-- Hình ảnh trang -->
                 <Image Name="FlipPageImage" 
@@ -53,10 +44,6 @@
 
         <!-- Mặt sau của trang lật (chỉ hiển thị khi lật > 50%) -->
         <Border Name="FlipPageBackSideBorder" 
-                Canvas.Left="0" 
-                Canvas.Top="0"
-                Width="500" 
-                Height="700"
                 Background="#D0D0D0"
                 BorderBrush="#999"
                 BorderThickness="1"
@@ -73,12 +60,8 @@
 
         <!-- Shadow effect -->
         <Border Name="ShadowBorder" 
-                Canvas.Left="0" 
-                Canvas.Top="0"
-                Width="500" 
-                Height="700"
                 Background="Black"
                 Opacity="0"/>
-    </Canvas>
+    </Grid>
 
 </UserControl>

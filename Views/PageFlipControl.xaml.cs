@@ -16,8 +16,8 @@ public partial class PageFlipControl : UserControl
     private double _previousMouseX = 0;
     private double _lastMouseVelocity = 0;
     private bool _isMouseDown = false;
-    private const double PAGE_WIDTH = 500;
-    private const double PAGE_HEIGHT = 700;
+    private double _pageWidth => this.ActualWidth > 0 ? this.ActualWidth : 500;
+    private double _pageHeight => this.ActualHeight > 0 ? this.ActualHeight : 700;
 
     public static readonly DependencyProperty CurrentPageImageProperty = DependencyProperty.Register(
         nameof(CurrentPageImage),
@@ -123,9 +123,9 @@ public partial class PageFlipControl : UserControl
 
         // Determine flip direction based on mouse position
         // If mouse is on right side, flip forward (right to left)
-        bool flipForward = _mouseDownPoint.X > PAGE_WIDTH / 2;
+        bool flipForward = _mouseDownPoint.X > _pageWidth / 2;
 
-        _animationEngine.StartFlip(CurrentPage, TotalPages, _mouseDownPoint.X, PAGE_WIDTH, flipForward);
+        _animationEngine.StartFlip(CurrentPage, TotalPages, _mouseDownPoint.X, _pageWidth, flipForward);
         e.Handled = true;
     }
 
@@ -140,7 +140,7 @@ public partial class PageFlipControl : UserControl
         _lastMouseVelocity = (currentPoint.X - _previousMouseX) / 16.0; // 60 FPS
         _previousMouseX = currentPoint.X;
 
-        _animationEngine.UpdateFlipPosition(deltaX, PAGE_WIDTH);
+        _animationEngine.UpdateFlipPosition(deltaX, _pageWidth);
     }
 
     private void PageFlipControl_MouseUp(object sender, MouseButtonEventArgs e)
@@ -148,7 +148,7 @@ public partial class PageFlipControl : UserControl
         if (!_isMouseDown) return;
 
         _isMouseDown = false;
-        _animationEngine.EndFlip(_lastMouseVelocity, PAGE_WIDTH);
+        _animationEngine.EndFlip(_lastMouseVelocity, _pageWidth);
         e.Handled = true;
     }
 
@@ -157,7 +157,7 @@ public partial class PageFlipControl : UserControl
         if (_isMouseDown)
         {
             _isMouseDown = false;
-            _animationEngine.EndFlip(_lastMouseVelocity, PAGE_WIDTH);
+            _animationEngine.EndFlip(_lastMouseVelocity, _pageWidth);
         }
     }
 
@@ -180,7 +180,7 @@ public partial class PageFlipControl : UserControl
         {
             // Tạo hiệu ứng uốn cong theo hướng lật
             skewTransform.AngleX = -progress * 8.0;
-            skewTransform.CenterX = PAGE_WIDTH / 2;
+            skewTransform.CenterX = _pageWidth / 2;
         }
         transformGroup.Children.Add(skewTransform);
 
@@ -189,7 +189,7 @@ public partial class PageFlipControl : UserControl
         // 2. Cập nhật gradient ánh sáng 
         var gradientBrush = PageFlip3DRenderer.CreateFlipGradientBrush(
             new PageFlipState { Progress = progress },
-            PAGE_WIDTH
+            _pageWidth
         );
         LightGradient.Fill = gradientBrush;
         LightGradient.Opacity = 0.4 * Math.Sin(progress * Math.PI);
@@ -197,7 +197,7 @@ public partial class PageFlipControl : UserControl
         // 3. Cập nhật shadow
         var (offsetX, offsetY, blurRadius, shadowOpacity) = PageFlip3DRenderer.CalculateShadowProperties(
             new PageFlipState { Progress = progress },
-            PAGE_WIDTH
+            _pageWidth
         );
 
         try
@@ -220,14 +220,18 @@ public partial class PageFlipControl : UserControl
         // 6. Clip geometry cho flip page (chỉ hiển thị phần chưa lật)
         var clipGeometry = PageFlip3DRenderer.CreateFlipClipGeometry(
             new PageFlipState { Progress = progress },
-            PAGE_WIDTH,
-            PAGE_HEIGHT
+            _pageWidth,
+            _pageHeight
         );
         FlipPageGrid.Clip = clipGeometry;
     }
 
     public void AnimatePageFlip(bool flipForward)
     {
+        // Ensure control is measured with new size before animation
+        this.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+        this.Arrange(new System.Windows.Rect(this.DesiredSize));
+        
         // Trigger auto-flip animation
         _animationEngine.AnimateAutoFlip(CurrentPage, TotalPages, flipForward, 1.8);
     }

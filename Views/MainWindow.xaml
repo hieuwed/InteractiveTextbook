@@ -91,7 +91,7 @@
                         </Grid.ColumnDefinitions>
                         
                         <!-- TRANG TRÁI -->
-                        <Border Grid.Column="0" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,-2,10" CornerRadius="2"
+                        <Border Grid.Column="0" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,10,10" CornerRadius="2"
                                 Width="{Binding ZoomLevel, Converter={x:Static sc:ZoomToWidthConverter.Instance}}"
                                 Height="{Binding ZoomLevel, Converter={x:Static sc:ZoomToHeightConverter.Instance}}">
                             <Grid Name="LeftPageGrid">
@@ -105,23 +105,21 @@
                                            Foreground="#CCC"
                                            FontSize="16"
                                            Visibility="{Binding LeftPageImage, Converter={x:Static sc:NullToVisibilityConverter.Instance}}"/>
+                                <!-- PAGE FLIP CONTROL OVERLAY FOR LEFT PAGE -->
+                                <local:PageFlipControl x:Name="FlipControlLeft"
+                                                      CurrentPageImage="{Binding LeftPageImage}"
+                                                      NextPageImage="{Binding RightPageImage}"
+                                                      CurrentPage="{Binding CurrentPage}"
+                                                      TotalPages="{Binding CurrentDocument.PageCount, FallbackValue=0}"
+                                                      FlipCompleted="PageFlipControl_FlipCompleted"
+                                                      FlipCancelled="PageFlipControl_FlipCancelled"
+                                                      Visibility="Hidden"
+                                                      Panel.ZIndex="100"/>
                             </Grid>
                         </Border>
                         
-                        <!-- PAGE FLIP CONTROL OVERLAY FOR LEFT PAGE (Trang lật về bên trái) -->
-                        <local:PageFlipControl Grid.Column="0" x:Name="FlipControlLeft"
-                                              CurrentPageImage="{Binding LeftPageImage}"
-                                              NextPageImage="{Binding RightPageImage}"
-                                              CurrentPage="{Binding CurrentPage}"
-                                              TotalPages="{Binding CurrentDocument.PageCount, FallbackValue=0}"
-                                              FlipCompleted="PageFlipControl_FlipCompleted"
-                                              FlipCancelled="PageFlipControl_FlipCancelled"
-                                              Visibility="Hidden"
-                                              Margin="10,10,-2,10"
-                                              Panel.ZIndex="100"/>
-                        
                         <!-- TRANG PHẢI -->
-                        <Border Grid.Column="1" BorderBrush="#999" BorderThickness="1" Background="White" Margin="-2,10,10,10" CornerRadius="2"
+                        <Border Grid.Column="1" BorderBrush="#999" BorderThickness="1" Background="White" Margin="10,10,10,10" CornerRadius="2"
                                 Width="{Binding ZoomLevel, Converter={x:Static sc:ZoomToWidthConverter.Instance}}"
                                 Height="{Binding ZoomLevel, Converter={x:Static sc:ZoomToHeightConverter.Instance}}">
                             <Grid Name="RightPageGrid">
@@ -135,20 +133,18 @@
                                            Foreground="#CCC"
                                            FontSize="16"
                                            Visibility="{Binding RightPageImage, Converter={x:Static sc:NullToVisibilityConverter.Instance}}"/>
+                                <!-- PAGE FLIP CONTROL OVERLAY FOR RIGHT PAGE -->
+                                <local:PageFlipControl x:Name="FlipControlRight"
+                                                      CurrentPageImage="{Binding RightPageImage}"
+                                                      NextPageImage="{Binding LeftPageImage}"
+                                                      CurrentPage="{Binding CurrentPage}"
+                                                      TotalPages="{Binding CurrentDocument.PageCount, FallbackValue=0}"
+                                                      FlipCompleted="PageFlipControl_FlipCompleted"
+                                                      FlipCancelled="PageFlipControl_FlipCancelled"
+                                                      Visibility="Hidden"
+                                                      Panel.ZIndex="100"/>
                             </Grid>
                         </Border>
-                        
-                        <!-- PAGE FLIP CONTROL OVERLAY FOR RIGHT PAGE (Trang lật về bên phải) -->
-                        <local:PageFlipControl Grid.Column="1" x:Name="FlipControlRight"
-                                              CurrentPageImage="{Binding RightPageImage}"
-                                              NextPageImage="{Binding LeftPageImage}"
-                                              CurrentPage="{Binding CurrentPage}"
-                                              TotalPages="{Binding CurrentDocument.PageCount, FallbackValue=0}"
-                                              FlipCompleted="PageFlipControl_FlipCompleted"
-                                              FlipCancelled="PageFlipControl_FlipCancelled"
-                                              Visibility="Hidden"
-                                              Margin="-2,10,10,10"
-                                              Panel.ZIndex="100"/>
                     </Grid>
                 </Grid>
             </ScrollViewer>

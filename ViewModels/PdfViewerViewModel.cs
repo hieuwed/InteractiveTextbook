@@ -22,9 +22,6 @@ public partial class PdfViewerViewModel : ObservableObject
     private double zoomLevel = 1.0;
 
     [ObservableProperty]
-    private bool isFlipping = false;
-
-    [ObservableProperty]
     private string statusMessage = "Sẵn sàng";
 
     [ObservableProperty]
@@ -178,7 +175,6 @@ public partial class PdfViewerViewModel : ObservableObject
     public void ZoomIn()
     {
         var newZoom = Math.Min(ZoomLevel + 0.1, 3.0);
-        System.Diagnostics.Debug.WriteLine($"ZoomIn: {ZoomLevel} -> {newZoom}");
         ZoomLevel = newZoom;
     }
 
@@ -186,14 +182,12 @@ public partial class PdfViewerViewModel : ObservableObject
     public void ZoomOut()
     {
         var newZoom = Math.Max(ZoomLevel - 0.1, 0.5);
-        System.Diagnostics.Debug.WriteLine($"ZoomOut: {ZoomLevel} -> {newZoom}");
         ZoomLevel = newZoom;
     }
 
     [RelayCommand]
     public void ResetZoom()
     {
-        System.Diagnostics.Debug.WriteLine($"ResetZoom: {ZoomLevel} -> 1.0");
         ZoomLevel = 1.0;
     }
 
@@ -239,10 +233,8 @@ public partial class PdfViewerViewModel : ObservableObject
 
     partial void OnZoomLevelChanged(double value)
     {
-        System.Diagnostics.Debug.WriteLine($"OnZoomLevelChanged: {value}, DocumentLoaded={DocumentLoaded}");
         if (DocumentLoaded)
         {
-            System.Diagnostics.Debug.WriteLine($"OnZoomLevelChanged: Triggering LoadPageAsync for page {CurrentPage}");
             System.Windows.Application.Current?.Dispatcher.BeginInvoke(async () =>
             {
                 await LoadPageAsync(CurrentPage);
